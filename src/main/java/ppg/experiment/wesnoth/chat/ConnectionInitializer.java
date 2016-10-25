@@ -1,11 +1,13 @@
 package ppg.experiment.wesnoth.chat;
 
+import java.io.FileOutputStream;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.ChannelOutboundHandlerAdapter;
+import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.LengthFieldPrepender;
-import io.netty.handler.codec.compression.ZlibCodecFactory;
-import io.netty.handler.codec.compression.ZlibWrapper;
 
 public class ConnectionInitializer extends ChannelInboundHandlerAdapter {
 
@@ -27,10 +29,28 @@ public class ConnectionInitializer extends ChannelInboundHandlerAdapter {
         int connectionNumber = b.readInt();
         System.out.println("Connection number: " + connectionNumber);
         ctx.pipeline().remove(this);
-        ctx.pipeline().addLast(new LengthFieldPrepender(4));
-        ctx.pipeline()
-                .addLast(ZlibCodecFactory.newZlibEncoder(ZlibWrapper.GZIP));
 
+        ctx.pipeline().addLast(new LengthFieldPrepender(4));
+
+        ctx.pipeline().addLast(new ChannelOutboundHandlerAdapter() {
+            @Override
+            public void write(ChannelHandlerContext ctx, Object msg,
+                    ChannelPromise promise) throws Exception {
+                ByteBuf buf = (ByteBuf) msg;
+                ByteBuf c = buf.copy();
+                byte[] bytes = new byte[c.readableBytes()];
+                c.readBytes(bytes);
+                FileOutputStream stream = new FileOutputStream(
+                        "/home/pubudu/tmp/blah");
+                try {
+                    stream.write(bytes);
+                } finally {
+                    stream.close();
+                }
+                super.write(ctx, msg, promise);
+            }
+        });
+        ctx.pipeline().addLast(new GzipEncoder());
         ctx.fireChannelRead(msg);
 
     }

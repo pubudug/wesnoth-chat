@@ -1,5 +1,7 @@
 package ppg.experiment.wesnoth.chat;
 
+import java.nio.charset.StandardCharsets;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,9 +21,10 @@ public class VersionRequestHandler implements MessageHandler {
 
     @Override
     public void handle(WMLMessage msg, Channel c) {
-        System.out.println("Got message " + msg);
-        String string = "[version]\nversion=1.12.6\n[/version]";
-        byte[] bytes = string.getBytes();
+        String log = "Got message " + msg;
+        System.out.println(log);
+        String string = "[version]\n\tversion=\"1.12.6\"\n[/version]\n\n";
+        byte[] bytes = string.getBytes(StandardCharsets.UTF_8);
         ByteBuf buf = c.alloc().buffer(bytes.length);
         buf.writeBytes(bytes);
         c.writeAndFlush(buf);

@@ -40,9 +40,8 @@ public class Client implements Runnable {
                             ch.pipeline()
                                     .addLast(new LengthFieldBasedFrameDecoder(
                                             40 * 1024 * 1024, 0, 4, 0, 4));
-                            ch.pipeline().addLast(ZlibCodecFactory
-                                    .newZlibDecoder(ZlibWrapper.GZIP));
-                            
+                            ch.pipeline().addLast(new GzipDecoder());
+
                             LinkedList<MessageHandler> messageHandlers = new LinkedList<>();
                             messageHandlers.add(new VersionRequestHandler());
                             messageHandlers.add(new MissingMessageHandler());

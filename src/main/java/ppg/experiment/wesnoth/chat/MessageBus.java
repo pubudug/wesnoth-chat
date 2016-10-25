@@ -2,7 +2,6 @@ package ppg.experiment.wesnoth.chat;
 
 import java.util.List;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import ppg.experiment.wesnoth.chat.parser.Tokenizer;
@@ -27,20 +26,17 @@ public class MessageBus extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg)
             throws Exception {
-        ByteBuf b = (ByteBuf) msg;
-        byte[] dst = new byte[b.readableBytes()];
-        b.readBytes(dst);
+        String b = (String) msg;
 
         WMLMessageBuilder builder = wmlMessageBuilderFactory
                 .createNewWMLMessageBuilder();
-        tokenizer.tokenize(new String(dst), builder);
+        tokenizer.tokenize(b, builder);
         WMLMessage message = builder.getWMLMessage();
         messageHandlers.stream().filter(h -> h.handles(message)).findFirst()
                 .orElse(new MissingMessageHandler())
                 .handle(message, ctx.channel());
-        b.release();
     }
-    
+
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         super.channelInactive(ctx);
