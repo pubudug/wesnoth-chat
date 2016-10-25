@@ -1,4 +1,4 @@
-package ppg.experiment;
+package ppg.experiment.wesnoth.chat;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;

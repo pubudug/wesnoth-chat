@@ -1,6 +1,7 @@
-package ppg.experiment;
+package ppg.experiment.wesnoth.chat;
 
 import java.net.InetSocketAddress;
+import java.util.LinkedList;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -37,7 +38,8 @@ public class Client implements Runnable {
                                             40 * 1024 * 1024, 0, 4, 0, 4));
                             ch.pipeline().addLast(ZlibCodecFactory
                                     .newZlibDecoder(ZlibWrapper.GZIP));
-                            ch.pipeline().addLast(new MessageBus());
+                            ch.pipeline().addLast(
+                                    new MessageBus(new LinkedList<>()));
                         }
                     });
             ChannelFuture f = b.connect().sync();
