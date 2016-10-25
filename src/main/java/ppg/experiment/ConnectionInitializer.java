@@ -1,13 +1,12 @@
 package ppg.experiment;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
-public class MessageHandler extends ChannelInboundHandlerAdapter {
+public class ConnectionInitializer extends ChannelInboundHandlerAdapter {
 
-    public MessageHandler() {
+    public ConnectionInitializer() {
     }
 
     @Override
@@ -21,7 +20,11 @@ public class MessageHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg)
             throws Exception {
-        System.out.println(msg);
+        ByteBuf b = (ByteBuf) msg;
+        int connectionNumber = b.readInt();
+        System.out.println("Connection number: " + connectionNumber);
+        ctx.pipeline().remove(this);
+        ctx.fireChannelRead(msg);
 
     }
 

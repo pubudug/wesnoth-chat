@@ -9,6 +9,9 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import io.netty.handler.codec.compression.ZlibCodecFactory;
+import io.netty.handler.codec.compression.ZlibWrapper;
 
 public class Client implements Runnable {
     private Channel channel;
@@ -28,7 +31,13 @@ public class Client implements Runnable {
                         @Override
                         protected void initChannel(Channel ch)
                                 throws Exception {
-                            ch.pipeline().addLast(new MessageHandler());
+                            ch.pipeline().addLast(new ConnectionInitializer());
+                            ch.pipeline()
+                                    .addLast(new LengthFieldBasedFrameDecoder(
+                                            40 * 1024 * 1024, 0, 4, 0, 4));
+                            ch.pipeline().addLast(ZlibCodecFactory
+                                    .newZlibDecoder(ZlibWrapper.GZIP));
+                            ch.pipeline().addLast(new MessageBus());
                         }
                     });
             ChannelFuture f = b.connect().sync();
@@ -47,7 +56,7 @@ public class Client implements Runnable {
             throw new RuntimeException(e);
         }
     }
-    
+
     public static void main(String[] args) {
         new Client().run();
     }
