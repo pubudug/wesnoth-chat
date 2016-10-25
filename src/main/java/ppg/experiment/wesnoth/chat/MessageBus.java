@@ -32,9 +32,11 @@ public class MessageBus extends ChannelInboundHandlerAdapter {
                 .createNewWMLMessageBuilder();
         tokenizer.tokenize(b, builder);
         WMLMessage message = builder.getWMLMessage();
-        messageHandlers.stream().filter(h -> h.handles(message)).findFirst()
-                .orElse(new MissingMessageHandler())
-                .handle(message, ctx.channel());
+        for (MessageHandler messageHandler : messageHandlers) {
+            if (messageHandler.handles(message)) {
+                messageHandler.handle(message, ctx.channel());
+            }
+        }
     }
 
     @Override
