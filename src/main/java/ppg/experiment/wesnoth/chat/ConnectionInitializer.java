@@ -3,6 +3,9 @@ package ppg.experiment.wesnoth.chat;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.handler.codec.LengthFieldPrepender;
+import io.netty.handler.codec.compression.ZlibCodecFactory;
+import io.netty.handler.codec.compression.ZlibWrapper;
 
 public class ConnectionInitializer extends ChannelInboundHandlerAdapter {
 
@@ -12,8 +15,8 @@ public class ConnectionInitializer extends ChannelInboundHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         System.out.println("Channel active!");
-        ByteBuf buf = ctx.alloc().buffer();
-        buf.writeBytes(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 });
+        ByteBuf buf = ctx.alloc().buffer(4);
+        buf.writeBytes(new byte[] { 0, 0, 0, 0 });
         ctx.channel().writeAndFlush(buf);
     }
 
@@ -24,13 +27,11 @@ public class ConnectionInitializer extends ChannelInboundHandlerAdapter {
         int connectionNumber = b.readInt();
         System.out.println("Connection number: " + connectionNumber);
         ctx.pipeline().remove(this);
+        ctx.pipeline().addLast(new LengthFieldPrepender(4));
+        ctx.pipeline()
+                .addLast(ZlibCodecFactory.newZlibEncoder(ZlibWrapper.GZIP));
+
         ctx.fireChannelRead(msg);
-
-    }
-
-    @Override
-    public void channelReadComplete(ChannelHandlerContext ctx)
-            throws Exception {
 
     }
 

@@ -1,9 +1,10 @@
 package ppg.experiment.wesnoth.chat;
 
 import io.netty.channel.Channel;
+import ppg.experiment.wesnoth.chat.wml.WMLMessage;
 
 public interface MessageHandler {
-    boolean handles(String root);
+    boolean handles(WMLMessage message);
 
-    void handle(String msg, Channel c);
+    void handle(WMLMessage msg, Channel c);
 }

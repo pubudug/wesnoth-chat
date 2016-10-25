@@ -18,4 +18,9 @@ public class Token {
         return sequence;
     }
 
+    @Override
+    public String toString() {
+        return "Token [token=" + token + ", sequence=" + sequence + "]";
+    }
+
 }
