@@ -1,4 +1,4 @@
-package ppg.experiment.wesnoth.chat;
+package ppg.experiment.wesnoth.chat.codec;
 
 import java.io.ByteArrayOutputStream;
 import java.util.zip.GZIPOutputStream;

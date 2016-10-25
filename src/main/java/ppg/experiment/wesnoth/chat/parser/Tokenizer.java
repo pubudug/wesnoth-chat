@@ -8,6 +8,9 @@ public class Tokenizer {
     
     public static int START_TAG = 0;
     public static int END_TAG = 1;
+    public static int ATTRIBUTE_NAME = 2;
+    public static int EQUALS = 3;
+    public static int ATTRIBUTE_VALUE = 3;
 
     private class TokenInfo {
         public final Pattern regex;
@@ -24,8 +27,11 @@ public class Tokenizer {
 
     public Tokenizer() {
         tokenInfos = new LinkedList<TokenInfo>();
-        add("\\[[a-z]*\\]", START_TAG);
-        add("\\[/[a-z]*\\]", END_TAG);
+        add("\\[[a-z_]+?\\]", START_TAG);
+        add("\\[/[a-z_]+?\\]", END_TAG);
+        add("[a-z_]+", ATTRIBUTE_NAME);
+        add("=", EQUALS);
+        add("\".*?\"", ATTRIBUTE_VALUE);
     }
 
     public void add(String regex, int token) {

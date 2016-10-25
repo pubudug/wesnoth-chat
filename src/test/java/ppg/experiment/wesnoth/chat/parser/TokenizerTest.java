@@ -24,8 +24,32 @@ public class TokenizerTest {
         verify(mock, times(2)).foundToken(argumentCaptor.capture());
 
         List<Token> values = argumentCaptor.getAllValues();
-        assertEquals(values.get(Tokenizer.START_TAG).getSequence(), "[version]");
-        assertEquals(values.get(Tokenizer.END_TAG).getSequence(), "[/version]");
+        assertEquals(values.get(0).getSequence(), "[version]");
+        assertEquals(values.get(1).getSequence(), "[/version]");
 
     }
+
+    @Test
+    public void testLoginResponse() {
+        String text = "[gamelist][/gamelist]"
+                + "[user]available=\"yes\"game_id=\"0\"location=\"\"name=\"ported\"registered=\"no\"status=\"lobby\"[/user]"
+                + "[user]available=\"yes\"game_id=\"0\"location=\"\"name=\"ugudu\"registered=\"no\"status=\"lobby\"[/user]\r\n";
+        Tokenizer t = new Tokenizer();
+        TokenCallback mock = mock(TokenCallback.class);
+        t.tokenize(text, mock);
+
+        ArgumentCaptor<Token> argumentCaptor = ArgumentCaptor
+                .forClass(Token.class);
+        verify(mock, times(42)).foundToken(argumentCaptor.capture());
+
+        List<Token> values = argumentCaptor.getAllValues();
+        assertEquals(values.get(0).getSequence(), "[gamelist]");
+        assertEquals(values.get(1).getSequence(), "[/gamelist]");
+        assertEquals(values.get(2).getSequence(), "[user]");
+        assertEquals(values.get(3).getSequence(), "available");
+        assertEquals(values.get(4).getSequence(), "=");
+        assertEquals(values.get(5).getSequence(), "\"yes\"");
+
+    }
+
 }

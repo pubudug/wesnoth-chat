@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.LengthFieldPrepender;
+import ppg.experiment.wesnoth.chat.codec.GzipEncoder;
 
 public class ConnectionInitializer extends ChannelInboundHandlerAdapter {
 

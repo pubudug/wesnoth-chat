@@ -16,6 +16,7 @@ import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
 import io.netty.handler.codec.compression.ZlibCodecFactory;
 import io.netty.handler.codec.compression.ZlibWrapper;
+import ppg.experiment.wesnoth.chat.codec.GzipDecoder;
 import ppg.experiment.wesnoth.chat.parser.Tokenizer;
 
 public class Client implements Runnable {
@@ -44,6 +45,9 @@ public class Client implements Runnable {
 
                             LinkedList<MessageHandler> messageHandlers = new LinkedList<>();
                             messageHandlers.add(new VersionRequestHandler());
+                            messageHandlers.add(new MustLoginRequestHandler());
+                            messageHandlers.add(new JoinLobbyResponseHandler());
+                            messageHandlers.add(new GameListMessageHandler());
                             messageHandlers.add(new MissingMessageHandler());
 
                             ch.pipeline()

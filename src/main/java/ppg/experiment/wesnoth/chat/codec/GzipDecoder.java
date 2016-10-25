@@ -1,4 +1,4 @@
-package ppg.experiment.wesnoth.chat;
+package ppg.experiment.wesnoth.chat.codec;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;

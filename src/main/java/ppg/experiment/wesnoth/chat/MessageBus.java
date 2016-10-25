@@ -27,14 +27,19 @@ public class MessageBus extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg)
             throws Exception {
         String b = (String) msg;
+        System.out.println(b);
 
         WMLMessageBuilder builder = wmlMessageBuilderFactory
                 .createNewWMLMessageBuilder();
         tokenizer.tokenize(b, builder);
-        WMLMessage message = builder.getWMLMessage();
-        for (MessageHandler messageHandler : messageHandlers) {
-            if (messageHandler.handles(message)) {
-                messageHandler.handle(message, ctx.channel());
+        List<WMLMessage> messages = builder.getWMLMessages();
+        System.out.println();
+        for (WMLMessage message : messages) {
+            for (MessageHandler messageHandler : messageHandlers) {
+                if (messageHandler.handles(message)) {
+                    messageHandler.handle(message, ctx.channel());
+                    break;
+                }
             }
         }
     }
