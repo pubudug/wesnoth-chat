@@ -42,12 +42,16 @@ public class WesnothChatClient implements Runnable {
 
     private int port;
 
-    public WesnothChatClient(String host, int port, VersionRequestHandler versionRequestHandler,
+    private ErrorHandler errorHandler;
+
+    public WesnothChatClient(String host, int port,
+            VersionRequestHandler versionRequestHandler,
             MustLoginRequestHandler mustLoginRequestHandler,
             UserMessageHandler userMessageHandler,
             GameListDiffMessageHandler gameListDiffMessageHandler,
             WhisperMessageHandler whisperMessageHandler,
-            MessageMessageHandler messageMessageHandler) {
+            MessageMessageHandler messageMessageHandler,
+            ErrorHandler errorHandler) {
         this.host = host;
         this.port = port;
         this.versionRequestHandler = versionRequestHandler;
@@ -56,6 +60,7 @@ public class WesnothChatClient implements Runnable {
         this.gameListDiffMessageHandler = gameListDiffMessageHandler;
         this.whisperMessageHandler = whisperMessageHandler;
         this.messageMessageHandler = messageMessageHandler;
+        this.errorHandler = errorHandler;
     }
 
     private void start() throws InterruptedException {
@@ -83,6 +88,7 @@ public class WesnothChatClient implements Runnable {
                             messageHandlers.add(gameListDiffMessageHandler);
                             messageHandlers.add(whisperMessageHandler);
                             messageHandlers.add(messageMessageHandler);
+                            messageHandlers.add(errorHandler);
                             messageHandlers.add(new IgnoreMessageHandler());
 
                             ch.pipeline()
@@ -119,8 +125,8 @@ public class WesnothChatClient implements Runnable {
 
     public void whisper(String to, String message) {
         message = message.replace("\"", "\"\"");
-        String string = "[whisper]\nmessage=\"" + message + "\"\nreceiver=\"" + to
-                + "\"\n[/whisper]";
+        String string = "[whisper]\nmessage=\"" + message + "\"\nreceiver=\""
+                + to + "\"\n[/whisper]";
         byte[] bytes = string.getBytes(StandardCharsets.UTF_8);
         ByteBuf buf = channel.alloc().buffer(bytes.length);
         buf.writeBytes(bytes);
