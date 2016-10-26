@@ -1,12 +1,14 @@
 package ppg.experiment.wesnoth.chat;
 
 import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import io.netty.bootstrap.Bootstrap;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -98,5 +100,24 @@ public class WesnothChatClient implements Runnable {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void sendMessage(String message) {
+        message.replace("\"", "\"\"");
+        String string = "[message]\nmessage=\"" + message + "\"\n[/message]";
+        byte[] bytes = string.getBytes(StandardCharsets.UTF_8);
+        ByteBuf buf = channel.alloc().buffer(bytes.length);
+        buf.writeBytes(bytes);
+        channel.writeAndFlush(buf);
+    }
+
+    public void whisper(String to, String message) {
+        message.replace("\"", "\"\"");
+        String string = "[whisper]\nmessage=\"" + message + "\"\nreceiver=\"" + to
+                + "\"\n[/whisper]";
+        byte[] bytes = string.getBytes(StandardCharsets.UTF_8);
+        ByteBuf buf = channel.alloc().buffer(bytes.length);
+        buf.writeBytes(bytes);
+        channel.writeAndFlush(buf);
     }
 }
