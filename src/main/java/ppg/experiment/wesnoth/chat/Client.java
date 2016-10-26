@@ -3,8 +3,6 @@ package ppg.experiment.wesnoth.chat;
 import java.net.InetSocketAddress;
 import java.util.LinkedList;
 
-import org.apache.logging.log4j.message.ParameterizedMessage;
-
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -13,9 +11,6 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
-import io.netty.handler.codec.LengthFieldPrepender;
-import io.netty.handler.codec.compression.ZlibCodecFactory;
-import io.netty.handler.codec.compression.ZlibWrapper;
 import ppg.experiment.wesnoth.chat.codec.GzipDecoder;
 import ppg.experiment.wesnoth.chat.parser.Tokenizer;
 
@@ -46,9 +41,7 @@ public class Client implements Runnable {
                             LinkedList<MessageHandler> messageHandlers = new LinkedList<>();
                             messageHandlers.add(new VersionRequestHandler());
                             messageHandlers.add(new MustLoginRequestHandler());
-                            messageHandlers.add(new JoinLobbyResponseHandler());
-                            messageHandlers.add(new GameListMessageHandler());
-                            messageHandlers.add(new MissingMessageHandler());
+                            messageHandlers.add(new IgnoreMessageHandler());
 
                             ch.pipeline()
                                     .addLast(new MessageBus(new Tokenizer(),
