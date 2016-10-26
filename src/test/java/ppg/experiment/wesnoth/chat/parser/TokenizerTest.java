@@ -65,4 +65,70 @@ public class TokenizerTest {
 
     }
 
+    @Test
+    public void testMessageWithQuoteAtEnd() {
+
+        String text = "[whisper]message=\"messag with quote \"\"\"receiver=\"test\"sender=\"ported\"[/whisper]";
+        Tokenizer t = new Tokenizer();
+        TokenCallback mock = mock(TokenCallback.class);
+        t.tokenize(text, mock);
+
+        ArgumentCaptor<Token> argumentCaptor = ArgumentCaptor
+                .forClass(Token.class);
+        verify(mock, times(5)).foundToken(argumentCaptor.capture());
+
+        List<Token> values = argumentCaptor.getAllValues();
+        assertEquals(values.get(0).getSequence(), "[whisper]");
+        assertEquals(values.get(1).getSequence(),
+                "message=\"messag with quote \"\"\"");
+        assertEquals(values.get(2).getSequence(), "receiver=\"test\"");
+        assertEquals(values.get(3).getSequence(), "sender=\"ported\"");
+        assertEquals(values.get(4).getSequence(), "[/whisper]");
+    }
+
+    @Test
+    public void testMessageWithQuotes() {
+
+        String text = "[whisper]message=\"quote \"\" and another \"\" .\""
+                + "receiver=\"test\"sender=\"ported\"[/whisper]";
+        Tokenizer t = new Tokenizer();
+        TokenCallback mock = mock(TokenCallback.class);
+        t.tokenize(text, mock);
+
+        ArgumentCaptor<Token> argumentCaptor = ArgumentCaptor
+                .forClass(Token.class);
+        verify(mock, times(5)).foundToken(argumentCaptor.capture());
+
+        List<Token> values = argumentCaptor.getAllValues();
+        assertEquals(values.get(0).getSequence(), "[whisper]");
+        assertEquals(values.get(1).getSequence(),
+                "message=\"quote \"\" and another \"\" .\"");
+        assertEquals(values.get(2).getSequence(), "receiver=\"test\"");
+        assertEquals(values.get(3).getSequence(), "sender=\"ported\"");
+        assertEquals(values.get(4).getSequence(), "[/whisper]");
+    }
+    
+    
+    @Test
+    public void testMessageWithEquals() {
+
+        String text = "[whisper]message=\"messag with =\"receiver=\"test\"sender=\"ported\"[/whisper]";
+        Tokenizer t = new Tokenizer();
+        TokenCallback mock = mock(TokenCallback.class);
+        t.tokenize(text, mock);
+
+        ArgumentCaptor<Token> argumentCaptor = ArgumentCaptor
+                .forClass(Token.class);
+        verify(mock, times(5)).foundToken(argumentCaptor.capture());
+
+        List<Token> values = argumentCaptor.getAllValues();
+        assertEquals(values.get(0).getSequence(), "[whisper]");
+        assertEquals(values.get(1).getSequence(),
+                "message=\"messag with =\"");
+        assertEquals(values.get(2).getSequence(), "receiver=\"test\"");
+        assertEquals(values.get(3).getSequence(), "sender=\"ported\"");
+        assertEquals(values.get(4).getSequence(), "[/whisper]");
+    }
+
+
 }

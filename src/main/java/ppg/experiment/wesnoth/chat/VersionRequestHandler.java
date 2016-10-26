@@ -23,5 +23,5 @@ public abstract class VersionRequestHandler implements MessageHandler {
         c.writeAndFlush(buf);
     }
 
-    abstract String getVersion();
+    public abstract String getVersion();
 }

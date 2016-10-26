@@ -27,7 +27,9 @@ public class Tokenizer {
         tokenInfos = new LinkedList<TokenInfo>();
         add("\\[[a-z_]+?\\]", START_TAG);
         add("\\[/[a-z_]+?\\]", END_TAG);
-        add("[a-z_]+=\".*?\"", ATTRIBUTE_NAME_AND_VALUE);
+        //\"(\"\")*
+        //add("[a-z_]+=\".*?(\"\")*\"", ATTRIBUTE_NAME_AND_VALUE);
+        add("[a-z_]+=\"(.*?(\"\")*.*?)*\"", ATTRIBUTE_NAME_AND_VALUE);
     }
 
     public void add(String regex, int token) {

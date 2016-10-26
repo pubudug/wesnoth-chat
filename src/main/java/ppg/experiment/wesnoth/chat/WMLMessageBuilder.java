@@ -38,9 +38,10 @@ public class WMLMessageBuilder implements TokenCallback {
             }
         } else if (token.getToken() == Tokenizer.ATTRIBUTE_NAME_AND_VALUE) {
             if (currentNode != null) {
-                String[] parts = token.getSequence().trim().split("=");
+                String[] parts = token.getSequence().trim().split("=", 2);
                 currentNode.addAttribute(parts[0],
-                        parts[1].substring(1, parts[1].length() - 1));
+                        parts[1].substring(1, parts[1].length() - 1)
+                                .replace("\"\"", "\""));
             } else {
                 // ignore ping message
             }
