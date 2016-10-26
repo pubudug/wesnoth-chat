@@ -103,7 +103,7 @@ public class WesnothChatClient implements Runnable {
     }
 
     public void sendMessage(String message) {
-        message.replace("\"", "\"\"");
+        message = message.replace("\"", "\"\"");
         String string = "[message]\nmessage=\"" + message + "\"\n[/message]";
         byte[] bytes = string.getBytes(StandardCharsets.UTF_8);
         ByteBuf buf = channel.alloc().buffer(bytes.length);
@@ -112,7 +112,7 @@ public class WesnothChatClient implements Runnable {
     }
 
     public void whisper(String to, String message) {
-        message.replace("\"", "\"\"");
+        message = message.replace("\"", "\"\"");
         String string = "[whisper]\nmessage=\"" + message + "\"\nreceiver=\"" + to
                 + "\"\n[/whisper]";
         byte[] bytes = string.getBytes(StandardCharsets.UTF_8);
