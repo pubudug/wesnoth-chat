@@ -19,3 +19,5 @@ Use
     client.sendMessage(...
     
 To send whispers/messages.
+
+See [wesnoth-chat-swing](https://github.com/pubudug/wesnoth-chat-swing) which is a Java Swing client that uses this library.
