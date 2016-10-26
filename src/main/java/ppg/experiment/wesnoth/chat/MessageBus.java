@@ -2,12 +2,16 @@ package ppg.experiment.wesnoth.chat;
 
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import ppg.experiment.wesnoth.chat.parser.Tokenizer;
 import ppg.experiment.wesnoth.chat.wml.WMLMessage;
 
 public class MessageBus extends ChannelInboundHandlerAdapter {
+    private static final Logger LOGGER = LogManager.getLogger(MessageBus.class);
 
     private Tokenizer tokenizer;
 
@@ -27,13 +31,11 @@ public class MessageBus extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg)
             throws Exception {
         String b = (String) msg;
-        System.out.println(b);
 
         WMLMessageBuilder builder = wmlMessageBuilderFactory
                 .createNewWMLMessageBuilder();
         tokenizer.tokenize(b, builder);
         List<WMLMessage> messages = builder.getWMLMessages();
-        System.out.println();
         for (WMLMessage message : messages) {
             for (MessageHandler messageHandler : messageHandlers) {
                 if (messageHandler.handles(message)) {
@@ -51,7 +53,7 @@ public class MessageBus extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        cause.printStackTrace();
+        LOGGER.error(cause.getMessage(), cause);
         ctx.close();
     }
 }

@@ -1,9 +1,14 @@
 package ppg.experiment.wesnoth.chat;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import io.netty.channel.Channel;
 import ppg.experiment.wesnoth.chat.wml.WMLMessage;
 
 public class IgnoreMessageHandler implements MessageHandler {
+    private static final Logger LOGGER = LogManager
+            .getLogger(IgnoreMessageHandler.class);
 
     @Override
     public boolean handles(WMLMessage message) {
@@ -12,7 +17,7 @@ public class IgnoreMessageHandler implements MessageHandler {
 
     @Override
     public void handle(WMLMessage msg, Channel c) {
-        System.out.println("Message " + msg + " ignored!");
+        LOGGER.warn("Message {} ignored!", msg);
     }
 
 }

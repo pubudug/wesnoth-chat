@@ -3,6 +3,9 @@ package ppg.experiment.wesnoth.chat;
 import java.net.InetSocketAddress;
 import java.util.LinkedList;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -14,14 +17,24 @@ import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import ppg.experiment.wesnoth.chat.codec.GzipDecoder;
 import ppg.experiment.wesnoth.chat.parser.Tokenizer;
 
-public class Client implements Runnable {
+public class WesnothChatClient implements Runnable {
+
+    private static final Logger LOGGER = LogManager.getLogger(WesnothChatClient.class);
+
     private Channel channel;
 
-    public Client() {
+    private VersionRequestHandler versionRequestHandler;
 
+    private MustLoginRequestHandler mustLoginRequestHandler;
+
+    public WesnothChatClient(VersionRequestHandler versionRequestHandler,
+            MustLoginRequestHandler mustLoginRequestHandler) {
+        this.versionRequestHandler = versionRequestHandler;
+        this.mustLoginRequestHandler = mustLoginRequestHandler;
     }
 
     private void start() throws InterruptedException {
+        LOGGER.info("Starting server.");
         EventLoopGroup group = new NioEventLoopGroup();
         try {
             Bootstrap b = new Bootstrap();
@@ -39,8 +52,8 @@ public class Client implements Runnable {
                             ch.pipeline().addLast(new GzipDecoder());
 
                             LinkedList<MessageHandler> messageHandlers = new LinkedList<>();
-                            messageHandlers.add(new VersionRequestHandler());
-                            messageHandlers.add(new MustLoginRequestHandler());
+                            messageHandlers.add(versionRequestHandler);
+                            messageHandlers.add(mustLoginRequestHandler);
                             messageHandlers.add(new IgnoreMessageHandler());
 
                             ch.pipeline()
@@ -65,10 +78,4 @@ public class Client implements Runnable {
             throw new RuntimeException(e);
         }
     }
-
-    public static void main(String[] args) {
-        Thread thread = new Thread(new Client());
-        thread.start();
-    }
-
 }
