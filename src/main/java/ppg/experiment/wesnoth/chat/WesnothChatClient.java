@@ -19,7 +19,8 @@ import ppg.experiment.wesnoth.chat.parser.Tokenizer;
 
 public class WesnothChatClient implements Runnable {
 
-    private static final Logger LOGGER = LogManager.getLogger(WesnothChatClient.class);
+    private static final Logger LOGGER = LogManager
+            .getLogger(WesnothChatClient.class);
 
     private Channel channel;
 
@@ -27,10 +28,26 @@ public class WesnothChatClient implements Runnable {
 
     private MustLoginRequestHandler mustLoginRequestHandler;
 
+    private UserMessageHandler userMessageHandler;
+
+    private GameListDiffMessageHandler gameListDiffMessageHandler;
+
+    private WhisperMessageHandler whisperMessageHandler;
+
+    private MessageMessageHandler messageMessageHandler;
+
     public WesnothChatClient(VersionRequestHandler versionRequestHandler,
-            MustLoginRequestHandler mustLoginRequestHandler) {
+            MustLoginRequestHandler mustLoginRequestHandler,
+            UserMessageHandler userMessageHandler,
+            GameListDiffMessageHandler gameListDiffMessageHandler,
+            WhisperMessageHandler whisperMessageHandler,
+            MessageMessageHandler messageMessageHandler) {
         this.versionRequestHandler = versionRequestHandler;
         this.mustLoginRequestHandler = mustLoginRequestHandler;
+        this.userMessageHandler = userMessageHandler;
+        this.gameListDiffMessageHandler = gameListDiffMessageHandler;
+        this.whisperMessageHandler = whisperMessageHandler;
+        this.messageMessageHandler = messageMessageHandler;
     }
 
     private void start() throws InterruptedException {
@@ -54,6 +71,10 @@ public class WesnothChatClient implements Runnable {
                             LinkedList<MessageHandler> messageHandlers = new LinkedList<>();
                             messageHandlers.add(versionRequestHandler);
                             messageHandlers.add(mustLoginRequestHandler);
+                            messageHandlers.add(userMessageHandler);
+                            messageHandlers.add(gameListDiffMessageHandler);
+                            messageHandlers.add(whisperMessageHandler);
+                            messageHandlers.add(messageMessageHandler);
                             messageHandlers.add(new IgnoreMessageHandler());
 
                             ch.pipeline()

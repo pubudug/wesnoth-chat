@@ -8,9 +8,4 @@ public class WMLMessage extends WMLNode {
         super(token.getSequence(), null);
     }
 
-    @Override
-    public String toString() {
-        return "WMLMessage [getNode()=" + getNode() + "]";
-    }
-
 }

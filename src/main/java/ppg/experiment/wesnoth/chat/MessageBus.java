@@ -31,6 +31,7 @@ public class MessageBus extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg)
             throws Exception {
         String b = (String) msg;
+        LOGGER.info("Message {} recieved", msg);
 
         WMLMessageBuilder builder = wmlMessageBuilderFactory
                 .createNewWMLMessageBuilder();

@@ -5,12 +5,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Tokenizer {
-    
+
     public static int START_TAG = 0;
     public static int END_TAG = 1;
-    public static int ATTRIBUTE_NAME = 2;
-    public static int EQUALS = 3;
-    public static int ATTRIBUTE_VALUE = 3;
+    public static int ATTRIBUTE_NAME_AND_VALUE = 2;
 
     private class TokenInfo {
         public final Pattern regex;
@@ -29,9 +27,7 @@ public class Tokenizer {
         tokenInfos = new LinkedList<TokenInfo>();
         add("\\[[a-z_]+?\\]", START_TAG);
         add("\\[/[a-z_]+?\\]", END_TAG);
-        add("[a-z_]+", ATTRIBUTE_NAME);
-        add("=", EQUALS);
-        add("\".*?\"", ATTRIBUTE_VALUE);
+        add("[a-z_]+=\".*?\"", ATTRIBUTE_NAME_AND_VALUE);
     }
 
     public void add(String regex, int token) {
