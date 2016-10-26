@@ -9,6 +9,7 @@ public class Tokenizer {
     public static int START_TAG = 0;
     public static int END_TAG = 1;
     public static int ATTRIBUTE_NAME_AND_VALUE = 2;
+    public static int IGNORE = 3;
 
     private class TokenInfo {
         public final Pattern regex;
@@ -25,6 +26,7 @@ public class Tokenizer {
 
     public Tokenizer() {
         tokenInfos = new LinkedList<TokenInfo>();
+        add("\\[game\\].*?\\[/game\\]", IGNORE);//to avoid stackoverflow error
         add("\\[[a-z_]+?\\]", START_TAG);
         add("\\[/[a-z_]+?\\]", END_TAG);
         //\"(\"\")*
