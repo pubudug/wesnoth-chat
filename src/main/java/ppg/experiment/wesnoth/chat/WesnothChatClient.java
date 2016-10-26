@@ -38,12 +38,18 @@ public class WesnothChatClient implements Runnable {
 
     private MessageMessageHandler messageMessageHandler;
 
-    public WesnothChatClient(VersionRequestHandler versionRequestHandler,
+    private String host;
+
+    private int port;
+
+    public WesnothChatClient(String host, int port, VersionRequestHandler versionRequestHandler,
             MustLoginRequestHandler mustLoginRequestHandler,
             UserMessageHandler userMessageHandler,
             GameListDiffMessageHandler gameListDiffMessageHandler,
             WhisperMessageHandler whisperMessageHandler,
             MessageMessageHandler messageMessageHandler) {
+        this.host = host;
+        this.port = port;
         this.versionRequestHandler = versionRequestHandler;
         this.mustLoginRequestHandler = mustLoginRequestHandler;
         this.userMessageHandler = userMessageHandler;
@@ -58,7 +64,7 @@ public class WesnothChatClient implements Runnable {
         try {
             Bootstrap b = new Bootstrap();
             b.group(group).channel(NioSocketChannel.class)
-                    .remoteAddress(new InetSocketAddress("localhost", 15000))
+                    .remoteAddress(new InetSocketAddress(host, port))
                     .handler(new ChannelInitializer<Channel>() {
 
                         @Override

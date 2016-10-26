@@ -3,7 +3,7 @@ A Java library to connect to wesnoth lobby chat
 
 To create a thread that connects to the server, instantiate WesnothChatClient
 
-    WesnothChatClient client =  new WesnothChatClient(dependencies...)
+    WesnothChatClient client =  new WesnothChatClient(host, port, dependencies...)
 
 The dependencies are self explanatory.
 
