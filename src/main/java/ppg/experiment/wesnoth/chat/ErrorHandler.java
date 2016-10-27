@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
+import ppg.experiment.wesnoth.chat.handler.MessageHandler;
 import ppg.experiment.wesnoth.chat.wml.WMLMessage;
 
 public abstract class ErrorHandler implements MessageHandler {

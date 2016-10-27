@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import ppg.experiment.wesnoth.chat.handler.MessageHandler;
 import ppg.experiment.wesnoth.chat.parser.Tokenizer;
 import ppg.experiment.wesnoth.chat.wml.WMLMessage;
 

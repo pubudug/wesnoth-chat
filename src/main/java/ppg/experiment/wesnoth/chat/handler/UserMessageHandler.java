@@ -1,4 +1,4 @@
-package ppg.experiment.wesnoth.chat;
+package ppg.experiment.wesnoth.chat.handler;
 
 import io.netty.channel.Channel;
 import ppg.experiment.wesnoth.chat.wml.WMLMessage;

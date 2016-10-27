@@ -17,7 +17,16 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import ppg.experiment.wesnoth.chat.codec.GzipDecoder;
+import ppg.experiment.wesnoth.chat.handler.GameListDiffMessageHandler;
+import ppg.experiment.wesnoth.chat.handler.IgnoreMessageHandler;
+import ppg.experiment.wesnoth.chat.handler.MessageHandler;
+import ppg.experiment.wesnoth.chat.handler.MessageMessageHandler;
+import ppg.experiment.wesnoth.chat.handler.MustLoginRequestHandler;
+import ppg.experiment.wesnoth.chat.handler.UserMessageHandler;
+import ppg.experiment.wesnoth.chat.handler.VersionRequestHandler;
+import ppg.experiment.wesnoth.chat.handler.WhisperMessageHandler;
 import ppg.experiment.wesnoth.chat.parser.Tokenizer;
+import ppg.experiment.wesnoth.chat.wml.WMLMessage;
 
 public class WesnothChatClient implements Runnable {
 
@@ -89,6 +98,7 @@ public class WesnothChatClient implements Runnable {
                             messageHandlers.add(whisperMessageHandler);
                             messageHandlers.add(messageMessageHandler);
                             messageHandlers.add(errorHandler);
+                            messageHandlers.add(getRedirectMessageHandler());
                             messageHandlers.add(new IgnoreMessageHandler());
 
                             ch.pipeline()
@@ -96,6 +106,7 @@ public class WesnothChatClient implements Runnable {
                                             messageHandlers,
                                             new WMLMessageBuilderFactory()));
                         }
+
                     });
             ChannelFuture f = b.connect().sync();
             this.channel = f.channel();
@@ -112,6 +123,35 @@ public class WesnothChatClient implements Runnable {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private MessageHandler getRedirectMessageHandler() {
+        return new MessageHandler() {
+
+            @Override
+            public boolean handles(WMLMessage message) {
+                return "[redirect]".equals(message.getNode());
+            }
+
+            @Override
+            public void handle(WMLMessage msg, Channel c) {
+                host = msg.getAttribute("host");
+                port = Integer.parseInt(msg.getAttribute("port"));
+                new Thread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        try {
+                            start();
+                        } catch (InterruptedException e) {
+                            LOGGER.error(e.getMessage(), e);
+                        }
+                    }
+                }).start();
+                c.close();
+
+            }
+        };
     }
 
     public void sendMessage(String message) {

@@ -1,4 +1,4 @@
-package ppg.experiment.wesnoth.chat;
+package ppg.experiment.wesnoth.chat.handler;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

@@ -1,4 +1,4 @@
-package ppg.experiment.wesnoth.chat;
+package ppg.experiment.wesnoth.chat.handler;
 
 import java.util.List;
 
