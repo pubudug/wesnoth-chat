@@ -15,8 +15,10 @@ public abstract class MustLoginRequestHandler implements MessageHandler {
 
     @Override
     public void handle(WMLMessage msg, Channel c) {
-        String string = "[login]\n\tusername=\"" + getUserName()
-                + "\"\n[/logn]\n\n";
+        String string = ""
+                + "[login]\n"
+                    + "\tusername=\"" + getUserName() + "\"\n"
+                + "[/logn]\n\n";
         byte[] bytes = string.getBytes(StandardCharsets.UTF_8);
         ByteBuf buf = c.alloc().buffer(bytes.length);
         buf.writeBytes(bytes);
